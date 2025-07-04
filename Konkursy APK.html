@@ -112,7 +112,7 @@
     let competitions = [];
     let currentCompetition = 0;
     let timer = null, startTime = null, currentIndex = null, loops = [];
-    const APP_STORAGE_KEY = 'strongmanAppData_v3';
+    const APP_STORAGE_KEY = 'strongmanAppData_v4'; // New key to avoid conflicts with old data structure
 
     // --- DOM ELEMENTS ---
     const nameInput = document.getElementById("nameInput");
@@ -130,7 +130,9 @@
 
     // --- DATA PERSISTENCE ---
     function saveData() {
-        localStorage.setItem(APP_STORAGE_KEY, JSON.stringify({ competitions, logo: logoDisplay.src }));
+        // FIX: Do not save the logo in localStorage to prevent quota errors.
+        // Only competition data is saved.
+        localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(competitions));
     }
 
     function loadData() {
@@ -141,22 +143,17 @@
             { name: "KONKURENCJA 3", participants: [], sortOrder: null }
         ];
         if (savedData) {
-            const parsedData = JSON.parse(savedData);
-            competitions = parsedData.competitions || defaultState;
+            competitions = JSON.parse(savedData);
+            // Ensure loaded data has the correct structure
             competitions.forEach((c, i) => {
                 if (!c.name) c.name = `KONKURENCJA ${i+1}`;
                 if (c.sortOrder === undefined) c.sortOrder = null;
             });
-            if (parsedData.logo) {
-                logoDisplay.src = parsedData.logo;
-                logoDisplay.classList.remove('hidden');
-            } else {
-                logoDisplay.classList.add('hidden');
-            }
         } else {
             competitions = defaultState;
-            logoDisplay.classList.add('hidden');
         }
+        // The logo is not loaded from storage, it must be re-uploaded each session.
+        logoDisplay.classList.add('hidden');
         switchCompetition();
     }
     
@@ -168,7 +165,7 @@
             reader.onload = e => {
                 logoDisplay.src = e.target.result;
                 logoDisplay.classList.remove('hidden');
-                saveData();
+                // FIX: Do not call saveData() here to avoid storing the image.
             };
             reader.readAsDataURL(file);
         }
@@ -412,4 +409,3 @@
   </script>
 </body>
 </html>
-
