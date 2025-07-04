@@ -6,6 +6,11 @@
   <title>Konkurs Publiczności Strongman</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    html {
+        /* FIX: Prevents text size inflation on mobile devices */
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
     body { font-family: 'Inter', sans-serif; }
     #focus-mode { z-index: 50; }
     body.focus-active { overflow: hidden; }
@@ -38,7 +43,8 @@
     <main class="bg-gray-800 rounded-2xl shadow-2xl p-4 md:p-6">
       
       <div class="mb-4">
-        <label class="text-center block mb-2 font-bold text-gray-400">1. WYBIERZ I NAZWIJ KONKURENCJĘ</label>
+        <!-- FIX: Added for attribute to link label to the select element for accessibility -->
+        <label for="competitionSelect" class="text-center block mb-2 font-bold text-gray-400">1. WYBIERZ I NAZWIJ KONKURENCJĘ</label>
         <select id="competitionSelect" onchange="switchCompetition()" class="w-full p-4 bg-gray-700 text-white text-xl font-bold rounded-xl border-2 border-gray-600 focus:ring-2 focus:ring-amber-400 focus:outline-none mb-2">
           <option value="0">KONKURENCJA 1</option>
           <option value="1">KONKURENCJA 2</option>
